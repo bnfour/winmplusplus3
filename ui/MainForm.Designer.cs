@@ -38,7 +38,6 @@ namespace winmplusplus3
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.label1 = new System.Windows.Forms.Label();
 			this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -61,9 +60,10 @@ namespace winmplusplus3
 			// trayIcon
 			// 
 			this.trayIcon.ContextMenuStrip = this.trayMenu;
-			this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+			this.trayIcon.Icon = global::winmplusplus3.Resources.tray_on;
 			this.trayIcon.Text = "Win-M++";
 			this.trayIcon.Visible = true;
+			this.trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIconMouseDoubleClick);
 			// 
 			// trayMenu
 			// 
@@ -74,7 +74,7 @@ namespace winmplusplus3
 			this.aboutWinMToolStripMenuItem,
 			this.quitToolStripMenuItem});
 			this.trayMenu.Name = "trayMenu";
-			this.trayMenu.Size = new System.Drawing.Size(164, 120);
+			this.trayMenu.Size = new System.Drawing.Size(164, 98);
 			this.trayMenu.Opened += new System.EventHandler(this.TrayMenuOpened);
 			// 
 			// enabledToolStripMenuItem
@@ -121,7 +121,7 @@ namespace winmplusplus3
 			this.ClientSize = new System.Drawing.Size(142, 37);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::winmplusplus3.Resources.app;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MainForm";

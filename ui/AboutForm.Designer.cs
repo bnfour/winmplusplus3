@@ -34,7 +34,6 @@ namespace winmplusplus3
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
 			this.pictureBox = new System.Windows.Forms.PictureBox();
 			this.titleLabel = new System.Windows.Forms.Label();
 			this.versionLabel = new System.Windows.Forms.Label();
@@ -45,7 +44,7 @@ namespace winmplusplus3
 			// 
 			// pictureBox
 			// 
-			this.pictureBox.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox.Image")));
+			this.pictureBox.Image = global::winmplusplus3.Resources.about_logo;
 			this.pictureBox.InitialImage = null;
 			this.pictureBox.Location = new System.Drawing.Point(12, 12);
 			this.pictureBox.Name = "pictureBox";
@@ -97,7 +96,7 @@ namespace winmplusplus3
 			this.Controls.Add(this.titleLabel);
 			this.Controls.Add(this.pictureBox);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::winmplusplus3.Resources.app;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "AboutForm";
