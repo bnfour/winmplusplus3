@@ -58,11 +58,12 @@ namespace winmplusplus3
 		/// </summary>
 		private IntPtr HandleHook(int nCode, IntPtr wParam, IntPtr lParam)
 		{
+			// if hook is disabled, we just pass on next one
 			if (!Enabled || nCode < 0)
 			{
 				return CallNextHookEx(_hookId, nCode, wParam, lParam);
 			}
-			
+			// getting the key code
 			var vkCode = Marshal.ReadInt32(lParam);
 			
 			if (wParam == WM_KEYDOWN)
@@ -114,7 +115,9 @@ namespace winmplusplus3
 		{
 			UnhookWindowsHookEx(_hookId);
 		}
-				
+		
+		// Winapi imports below
+		
 		[DllImport("user32.dll")]
 		private static extern IntPtr SetWindowsHookEx(int idHook,
 		                                              LowLevelKeyboardProc lpfn, 
