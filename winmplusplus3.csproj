@@ -63,10 +63,6 @@
     <Compile Include="ui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\MainForm.Designer1.cs">
-      <DependentUpon>MainForm.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
