@@ -10,9 +10,9 @@ namespace winmplusplus3
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		private AboutForm _aboutForm;
-		private AutorunManager _autorunManager;
-		private KeyboardHookHandler _keyboardHookHandler;
+		private AboutForm _aboutForm = new AboutForm();
+		private readonly AutorunManager _autorunManager;
+		private readonly KeyboardHookHandler _keyboardHookHandler;
 		
 		/// <summary>
 		/// MainForm constructor.
@@ -73,9 +73,8 @@ namespace winmplusplus3
 		{
 			// this probably should be moved to AboutForm itself
 			// TODO: consider making AboutForm a Singleton
-			if (_aboutForm == null || _aboutForm.IsDisposed)
+			if (!_aboutForm.Visible)
 			{
-				_aboutForm = new AboutForm();
 				_aboutForm.Show();
 			}
 			else
@@ -129,6 +128,11 @@ namespace winmplusplus3
 				_keyboardHookHandler.Enabled = !_keyboardHookHandler.Enabled;
 				UpdateIcon();
 			}
+		}
+		
+		~MainForm()
+		{
+			GC.KeepAlive(_aboutForm);
 		}
 	}
 }

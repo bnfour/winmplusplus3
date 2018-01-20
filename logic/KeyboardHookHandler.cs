@@ -17,8 +17,8 @@ namespace winmplusplus3
 		
 		// Winapi constants
 		private const int WH_KEYBOARD_LL = 0xD;
-		private readonly IntPtr WM_KEYDOWN = (IntPtr)0x0100;
-		private readonly IntPtr WM_KEYUP = (IntPtr)0x0101;
+		private const int WM_KEYDOWN = 0x0100;
+		private const int WM_KEYUP = 0x0101;
 		
 		// flags to indicate state
 		private bool _winDown;
@@ -31,7 +31,7 @@ namespace winmplusplus3
 		/// <param name="nCode">Process parameter. If less than zero, we must call CallNextHookEx.</param>
 		/// <param name="wParam">Event type, such as WM_KEYUP.</param>
 		/// <param name="lParam">Key code.</param>
-		/// <returns>Pointer to next hook or pointer to -1 when hook is fully processed.</returns>
+		/// <returns>Pointer to next hook or non-zero pointer when hook is fully processed.</returns>
 		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 		
 		/// <summary>
@@ -50,7 +50,7 @@ namespace winmplusplus3
 		public KeyboardHookHandler()
 		{
 			string curModuleName = Process.GetCurrentProcess().MainModule.ModuleName;
-			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, HandleHook, GetModuleHandle(curModuleName), 0);
+			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, this.HandleHook, GetModuleHandle(curModuleName), 0);
 		}
 		
 		/// <summary>
@@ -65,32 +65,33 @@ namespace winmplusplus3
 			}
 			// getting the key code
 			var vkCode = Marshal.ReadInt32(lParam);
+			var param = (int)wParam;
 			
-			if (wParam == WM_KEYDOWN)
+			if (param == WM_KEYDOWN)
 			{
 				switch (vkCode)
 				{
 					// set modifier flags if necessary
 					case _winKeyCode:
 						_winDown = true;
-						return CallNextHookEx(_hookId, nCode, wParam, lParam);
+						break;
 					case _lShiftCode:
 						_lShiftDown = true;
-						return CallNextHookEx(_hookId, nCode, wParam, lParam);
+						break;
 					case _rShiftCode:
 						_rShiftDown = true;
-						return CallNextHookEx(_hookId, nCode, wParam, lParam);
+						break;
 					case _mCode:
 						if (_winDown)
 						{
 							// TODO minimizing
-							return (IntPtr)(-1);
+							return (IntPtr)1;
 						}
-						return CallNextHookEx(_hookId, nCode, wParam, lParam);
+						break;
 				}
 			}
 			// reset relevant flag on keyup
-			if (wParam == WM_KEYUP)
+			else if (param == WM_KEYUP)
 			{
 				switch (vkCode)
 				{
@@ -105,7 +106,7 @@ namespace winmplusplus3
 						break;
 				}
 			}
-			return CallNextHookEx(_hookId, nCode, wParam, lParam);
+			return CallNextHookEx(_hookId, nCode, wParam, lParam);;
 		}
 		
 		/// <summary>
@@ -118,20 +119,20 @@ namespace winmplusplus3
 		
 		// Winapi imports below
 		
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", SetLastError=true)]
 		private static extern IntPtr SetWindowsHookEx(int idHook,
 		                                              LowLevelKeyboardProc lpfn, 
 		                                              IntPtr hMod, uint dwThreadId);
 
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", SetLastError=true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", SetLastError=true)]
 		private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
 		                                            IntPtr wParam, IntPtr lParam);
 
-		[DllImport("kernel32.dll")]
+		[DllImport("kernel32.dll", SetLastError=true)]
 		private static extern IntPtr GetModuleHandle(string lpModuleName);
 	}
 }
