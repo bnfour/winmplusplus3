@@ -31,13 +31,13 @@ namespace winmplusplus3
 		/// <param name="nCode">Process parameter. If less than zero, we must call CallNextHookEx.</param>
 		/// <param name="wParam">Event type, such as WM_KEYUP.</param>
 		/// <param name="lParam">Key code.</param>
-		/// <returns></returns>
+		/// <returns>Pointer to next hook or pointer to -1 when hook is fully processed.</returns>
 		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 		
 		/// <summary>
 		/// Pointer to hook, used to disable it.
 		/// </summary>
-		private IntPtr _hookId;
+		private readonly IntPtr _hookId;
 		
 		/// <summary>
 		/// Boolean indicating whether this hook handler is enabled.
