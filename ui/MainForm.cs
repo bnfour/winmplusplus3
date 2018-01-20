@@ -10,7 +10,8 @@ namespace winmplusplus3
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		// TODO: add AboutForm field and references to AutorunManager and KeyBoardHookHandler.
+		// TODO: add references to AutorunManager and KeyBoardHookHandler.
+		private AboutForm _aboutForm;
 		
 		/// <summary>
 		/// MainForm constructor.
@@ -68,7 +69,17 @@ namespace winmplusplus3
 		/// <param name="e">Event arguments, unused.</param>
 		private void AboutWinMToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			// TODO: show AboutForm after it's designed
+			// this probably should be moved to AboutForm itself
+			// TODO: consider making AboutForm a Singleton
+			if (_aboutForm == null || _aboutForm.IsDisposed)
+			{
+				_aboutForm = new AboutForm();
+				_aboutForm.Show();
+			}
+			else
+			{
+				_aboutForm.BringToFront();
+			}
 		}
 		
 		/// <summary>
