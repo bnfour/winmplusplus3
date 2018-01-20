@@ -10,13 +10,14 @@ namespace winmplusplus3
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		// TODO: add references to AutorunManager and KeyBoardHookHandler.
+		// TODO: add references KeyBoardHookHandler.
 		private AboutForm _aboutForm;
+		private AutorunManager _autorunManager;
 		
 		/// <summary>
 		/// MainForm constructor.
 		/// </summary>
-		public MainForm()
+		public MainForm(AutorunManager autorunManager)
 		{
 			//
 			// The InitializeComponent() call is required 
@@ -25,7 +26,7 @@ namespace winmplusplus3
 			InitializeComponent();
 			
 			// TODO: pass the references for classes used throughout handlers
-			// TODO: set Run at startup value from AutorunManager
+			_autorunManager = autorunManager;
 		}
 		
 		/// <summary>
@@ -58,7 +59,7 @@ namespace winmplusplus3
 		/// <param name="e">Event arguments, unused.</param>
 		private void RunAtStartupToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			// TODO: set AutorunManager state accordingly
+			_autorunManager.AutorunEnabled = runAtStartupToolStripMenuItem.Checked;
 		}
 		
 		/// <summary>
@@ -91,6 +92,17 @@ namespace winmplusplus3
 		private void QuitToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			Application.Exit();
+		}
+		
+		/// <summary>
+		/// Handler for trayMenu's Opened event.
+		/// Re-checks startup state to prevent bad behavior when registry key changes by third party.
+		/// </summary>
+		/// <param name="sender">Event sender, trayMenu.</param>
+		/// <param name="e">Event arguments, unused.</param>
+		private void TrayMenuOpened(object sender, EventArgs e)
+		{
+			runAtStartupToolStripMenuItem.Checked = _autorunManager.AutorunEnabled;
 		}
 	}
 }

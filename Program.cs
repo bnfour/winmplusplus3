@@ -8,6 +8,8 @@ namespace winmplusplus3
 	/// </summary>
 	internal sealed class Program
 	{
+		private readonly static AutorunManager _autorunManager = new AutorunManager();
+		
 		/// <summary>
 		/// Program entry point.
 		/// </summary>
@@ -16,7 +18,7 @@ namespace winmplusplus3
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
+			Application.Run(new MainForm(_autorunManager));
 		}
 		
 	}

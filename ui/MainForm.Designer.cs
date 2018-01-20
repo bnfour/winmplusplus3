@@ -74,7 +74,8 @@ namespace winmplusplus3
 			this.aboutWinMToolStripMenuItem,
 			this.quitToolStripMenuItem});
 			this.trayMenu.Name = "trayMenu";
-			this.trayMenu.Size = new System.Drawing.Size(164, 98);
+			this.trayMenu.Size = new System.Drawing.Size(164, 120);
+			this.trayMenu.Opened += new System.EventHandler(this.TrayMenuOpened);
 			// 
 			// enabledToolStripMenuItem
 			// 
