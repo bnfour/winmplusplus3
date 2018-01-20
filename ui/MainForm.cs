@@ -49,6 +49,7 @@ namespace winmplusplus3
 		private void EnabledToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			_keyboardHookHandler.Enabled = enabledToolStripMenuItem.Checked;
+			UpdateIcon();
 		}
 		
 		/// <summary>
@@ -97,12 +98,37 @@ namespace winmplusplus3
 		/// <summary>
 		/// Handler for trayMenu's Opened event.
 		/// Re-checks startup state to prevent bad behavior when registry key changes by third party.
+		/// Also re-checks whether hook is enabled.
 		/// </summary>
 		/// <param name="sender">Event sender, trayMenu.</param>
 		/// <param name="e">Event arguments, unused.</param>
 		private void TrayMenuOpened(object sender, EventArgs e)
 		{
 			runAtStartupToolStripMenuItem.Checked = _autorunManager.AutorunEnabled;
+			enabledToolStripMenuItem.Checked = _keyboardHookHandler.Enabled;
+		}
+		
+		/// <summary>
+		/// Sets the tray icon menu according to hook state.
+		/// </summary>
+		private void UpdateIcon()
+		{
+			trayIcon.Icon = (_keyboardHookHandler.Enabled)? Resources.tray_on: Resources.tray_off;
+		}
+		
+		/// <summary>
+		/// Tray icon double click handler.
+		/// Toggles app on and off.
+		/// </summary>
+		/// <param name="sender">Event sender, trayIcon.</param>
+		/// <param name="e">Event arguments, contains mouse button used to click.</param>
+		private void TrayIconMouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				_keyboardHookHandler.Enabled = !_keyboardHookHandler.Enabled;
+				UpdateIcon();
+			}
 		}
 	}
 }
