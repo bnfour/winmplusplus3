@@ -10,14 +10,14 @@ namespace winmplusplus3
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		// TODO: add references KeyBoardHookHandler.
 		private AboutForm _aboutForm;
 		private AutorunManager _autorunManager;
+		private KeyboardHookHandler _keyboardHookHandler;
 		
 		/// <summary>
 		/// MainForm constructor.
 		/// </summary>
-		public MainForm(AutorunManager autorunManager)
+		public MainForm(AutorunManager autorunManager, KeyboardHookHandler keyboardHookHandler)
 		{
 			//
 			// The InitializeComponent() call is required 
@@ -25,8 +25,8 @@ namespace winmplusplus3
 			//
 			InitializeComponent();
 			
-			// TODO: pass the references for classes used throughout handlers
 			_autorunManager = autorunManager;
+			_keyboardHookHandler = keyboardHookHandler;
 		}
 		
 		/// <summary>
@@ -48,7 +48,7 @@ namespace winmplusplus3
 		/// <param name="e">Event arguments, unused.</param>
 		private void EnabledToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			// TODO: set KeyboardHookHandler state accordingly and update icon
+			_keyboardHookHandler.Enabled = enabledToolStripMenuItem.Checked;
 		}
 		
 		/// <summary>

@@ -9,6 +9,7 @@ namespace winmplusplus3
 	internal sealed class Program
 	{
 		private readonly static AutorunManager _autorunManager = new AutorunManager();
+		private readonly static KeyboardHookHandler _keyboardHookHandler = new KeyboardHookHandler();
 		
 		/// <summary>
 		/// Program entry point.
@@ -18,7 +19,7 @@ namespace winmplusplus3
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm(_autorunManager));
+			Application.Run(new MainForm(_autorunManager, _keyboardHookHandler));
 		}
 		
 	}
