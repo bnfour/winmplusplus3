@@ -10,6 +10,8 @@
     <AssemblyName>winmplusplus3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <ApplicationIcon>images\app.ico</ApplicationIcon>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -59,8 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="images\about_logo.png" />
+    <None Include="images\app.ico" />
+    <None Include="images\tray_off.ico" />
+    <None Include="images\tray_on.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="images" />
     <Folder Include="ui" />
   </ItemGroup>
   <ItemGroup>
