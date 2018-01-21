@@ -6,7 +6,8 @@ namespace winmplusplus3
 	/// Class that holds read-only data about window needed for app's operation:
 	/// window handle for minimizing;
 	/// window title for checking for excluded windows;
-	/// Screen window is on for filtering.
+	/// Screen window is on for filtering;
+	/// whether window is visible.
 	/// </summary>
 	public class Window
 	{
@@ -26,16 +27,23 @@ namespace winmplusplus3
 		public System.Windows.Forms.Screen Screen {get; private set;}
 		
 		/// <summary>
+		/// 
+		/// </summary>
+		public bool Visible {get; private set;}
+		
+		/// <summary>
 		/// Constructor that sets all the parameters.
 		/// </summary>
 		/// <param name="hwnd">Window handle to set.</param>
 		/// <param name="title">Window title to set.</param>
 		/// <param name="screen">Screen to set.</param>
-		public Window(IntPtr hwnd, string title, System.Windows.Forms.Screen screen)
+		/// <param name="visible">Whether window is visible.</param>
+		public Window(IntPtr hwnd, string title, System.Windows.Forms.Screen screen, bool visible)
 		{
 			hWnd = hwnd;
 			Title = title;
 			Screen = screen;
+			Visible = visible;
 		}
 	}
 }
