@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace winmplusplus3
 {
@@ -45,10 +46,28 @@ namespace winmplusplus3
 		public bool Enabled = true;
 		
 		/// <summary>
+		/// List that holds titles of windows not to minimize.
+		/// </summary>
+		private readonly List<string> _excluded;
+		
+		/// <summary>
 		/// Constructor that sets the hook.
 		/// </summary>
 		public KeyboardHookHandler()
 		{
+			// load exclusions
+			var loader = new ExcludedLoader();
+			try
+			{
+				_excluded = loader.Excluded;
+			}
+			catch (ApplicationException)
+			{
+				_excluded = loader.Defaults;
+				// TODO set some kind of flag to display notification via MainForm's trayIcon
+			}
+			
+			// set the hook
 			string curModuleName = Process.GetCurrentProcess().MainModule.ModuleName;
 			var callback = new LowLevelKeyboardProc(this.HandleHook);
 			gch = GCHandle.Alloc(callback);
@@ -65,7 +84,7 @@ namespace winmplusplus3
 			{
 				return CallNextHookEx(_hookId, nCode, wParam, lParam);
 			}
-			// getting the key code
+			// getting the parameters
 			var vkCode = Marshal.ReadInt32(lParam);
 			var param = (int)wParam;
 			
