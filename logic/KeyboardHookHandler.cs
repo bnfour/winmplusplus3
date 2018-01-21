@@ -38,7 +38,7 @@ namespace winmplusplus3
 		/// Pointer to hook, used to disable it.
 		/// </summary>
 		private readonly IntPtr _hookId;
-		
+		private readonly GCHandle gch;
 		/// <summary>
 		/// Boolean indicating whether this hook handler is enabled.
 		/// </summary>
@@ -50,7 +50,9 @@ namespace winmplusplus3
 		public KeyboardHookHandler()
 		{
 			string curModuleName = Process.GetCurrentProcess().MainModule.ModuleName;
-			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, this.HandleHook, GetModuleHandle(curModuleName), 0);
+			var callback = new LowLevelKeyboardProc(this.HandleHook);
+			gch = GCHandle.Alloc(callback);
+			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, callback, GetModuleHandle(curModuleName), 0);
 		}
 		
 		/// <summary>
@@ -115,6 +117,7 @@ namespace winmplusplus3
 		~KeyboardHookHandler()
 		{
 			UnhookWindowsHookEx(_hookId);
+			gch.Free();
 		}
 		
 		// Winapi imports below
