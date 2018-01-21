@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace winmplusplus3
 {
@@ -73,6 +74,10 @@ namespace winmplusplus3
 		{
 			// this probably should be moved to AboutForm itself
 			// TODO: consider making AboutForm a Singleton
+			if (_aboutForm.IsDisposed || _aboutForm == null)
+			{
+				_aboutForm = new AboutForm();
+			}
 			if (!_aboutForm.Visible)
 			{
 				_aboutForm.Show();
@@ -128,11 +133,6 @@ namespace winmplusplus3
 				_keyboardHookHandler.Enabled = !_keyboardHookHandler.Enabled;
 				UpdateIcon();
 			}
-		}
-		
-		~MainForm()
-		{
-			GC.KeepAlive(_aboutForm);
 		}
 	}
 }
