@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace winmplusplus3
 {
 	/// <summary>
-	/// Description of WindowMinimizer.
+	/// Class that encapsulates window minimizing.
 	/// </summary>
 	public class WindowMinimizer
 	{
