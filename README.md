@@ -9,6 +9,6 @@ Usage:
 
 This is pretty much my attempt to write readable code in accordance with SOLID principles I was told about in the meantime.
 
-Configurable via tray icon, as shown here, temprorary screenshot from version 2:
+Configurable via tray icon, as shown here:
 
-![Screen](http://i.imgur.com/GPCXDmv.png)
+![Screen](https://i.imgur.com/NDJSV1L.png)
