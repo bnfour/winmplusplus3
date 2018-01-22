@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="logic\AutorunManager.cs" />
     <Compile Include="logic\ExcludedLoader.cs" />
+    <Compile Include="logic\IFilter.cs" />
     <Compile Include="logic\KeyboardHookHandler.cs" />
     <Compile Include="logic\Window.cs" />
     <Compile Include="logic\WindowEnumerator.cs" />
