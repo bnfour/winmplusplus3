@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="logic\AutorunManager.cs" />
+    <Compile Include="logic\BasicFilter.cs" />
     <Compile Include="logic\ExcludedLoader.cs" />
     <Compile Include="logic\IFilter.cs" />
     <Compile Include="logic\KeyboardHookHandler.cs" />
