@@ -7,7 +7,7 @@ namespace winmplusplus3
 	/// Class that filters only otherwise valid Windows (see BasicFilter) which is also 
 	/// on the same screen as currently focused Window.
 	/// </summary>
-	public class CurrentScreenFilter : BasicFilter
+	public class CurrentScreenFilter :  BasicFilter, IFilter
 	{
 		/// <summary>
 		/// Field to store currently focused window in order to compare Screens to its Screen.
@@ -30,7 +30,7 @@ namespace winmplusplus3
 		/// </summary>
 		/// <param name="toFilter">List of Windows to filter.</param>
 		/// <returns>Filtered list.</returns>
-		public List<Window> Filter(List<Window> toFilter)
+		public new List<Window> Filter(List<Window> toFilter)
 		{
 			var screen  = _foregroundWindow.Screen;
 			var filtered = new List<Window>();
