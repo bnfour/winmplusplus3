@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace winmplusplus3
 {
@@ -27,6 +28,15 @@ namespace winmplusplus3
 		private bool _rShiftDown;
 		
 		/// <summary>
+		/// Enumeration to pass which filter to use to BackgroundWorker.
+		/// </summary>
+		private enum MinimizingType
+		{
+			AllDisplays,   // corresponds to BasicFilter
+			CurrentDisplay // to CurrentScreenFilter
+		}
+		
+		/// <summary>
 		/// Delegate for low-level keyboard hook callback.
 		/// </summary>
 		/// <param name="nCode">Process parameter. If less than zero, we must call CallNextHookEx.</param>
@@ -36,10 +46,31 @@ namespace winmplusplus3
 		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 		
 		/// <summary>
+		/// Used to run minimizing code asynchronously.
+		/// OS might drop our hook handler if it's slow, so we just do all the heavy lifting in a separate thread.
+		/// </summary>
+		private readonly BackgroundWorker _backgroundWorker = new BackgroundWorker();
+		
+		/// <summary>
+		/// Used to get all the windows at once and the focused one specifically if necessary.
+		/// </summary>
+		private readonly WindowEnumerator _windowEnumerator = new WindowEnumerator();
+		
+		/// <summary>
+		/// Used to actually minimize windows.
+		/// </summary>
+		private readonly WindowMinimizer _windowMinimizer = new WindowMinimizer();
+		
+		/// <summary>
 		/// Pointer to hook, used to disable it.
 		/// </summary>
 		private readonly IntPtr _hookId;
+		
+		/// <summary>
+		/// Handle to hook callback delegate. Used to prevent it being eaten alive by GC causing crashes.
+		/// </summary>
 		private readonly GCHandle gch;
+		
 		/// <summary>
 		/// Boolean indicating whether this hook handler is enabled.
 		/// </summary>
@@ -70,8 +101,12 @@ namespace winmplusplus3
 			// set the hook
 			string curModuleName = Process.GetCurrentProcess().MainModule.ModuleName;
 			var callback = new LowLevelKeyboardProc(this.HandleHook);
-			gch = GCHandle.Alloc(callback);
+			gch = GCHandle.Alloc(callback); // GC protection
 			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, callback, GetModuleHandle(curModuleName), 0);
+			
+			// configure the BackgroundWorker
+			_backgroundWorker.DoWork += new DoWorkEventHandler(this.DoWork);
+			
 		}
 		
 		/// <summary>
@@ -79,7 +114,7 @@ namespace winmplusplus3
 		/// </summary>
 		private IntPtr HandleHook(int nCode, IntPtr wParam, IntPtr lParam)
 		{
-			// if hook is disabled, we just pass on next one
+			// if hook is disabled, we just pass on to the next one in chain
 			if (!Enabled || nCode < 0)
 			{
 				return CallNextHookEx(_hookId, nCode, wParam, lParam);
@@ -105,7 +140,12 @@ namespace winmplusplus3
 					case _mCode:
 						if (_winDown)
 						{
-							// TODO minimizing
+							// setting enum based on shift state
+							MinimizingType type = (_lShiftDown || _rShiftDown) ? MinimizingType.AllDisplays :
+								MinimizingType.CurrentDisplay;
+							
+							_backgroundWorker.RunWorkerAsync(type);
+							// prevents other apps from processing this keypress
 							return (IntPtr)1;
 						}
 						break;
@@ -127,11 +167,40 @@ namespace winmplusplus3
 						break;
 				}
 			}
-			return CallNextHookEx(_hookId, nCode, wParam, lParam);;
+			// if it's neither win-m nor win-shift-m, pass on
+			return CallNextHookEx(_hookId, nCode, wParam, lParam);
 		}
 		
 		/// <summary>
-		/// Destructor that removes hook.
+		/// Event hander for the BackgroundWorker. Run in a separate thread.
+		/// Does minimization of windows.
+		/// </summary>
+		/// <param name="sender">Event sender, unused.</param>
+		/// <param name="e">Event arguments. A MinimizingType instance is boxed within e.Argument.</param>
+		private void DoWork(object sender, DoWorkEventArgs e)
+		{
+			// this (un)boxing is unfortunate
+			var type = (MinimizingType)e.Argument;
+			IFilter usedFilter;
+			switch (type)
+			{
+				case MinimizingType.AllDisplays:
+					usedFilter = new BasicFilter(_excluded);
+					break;
+				case MinimizingType.CurrentDisplay:
+					usedFilter = new CurrentScreenFilter(_excluded, _windowEnumerator.GetForeground());
+					break;
+				default:
+					// this should never happen, but whatever makes compiler happy
+					// prevents CS0165, use of unassgned variable `usedFilter'
+					throw new ArgumentException("Unknown MinimizingType enum value.");
+			}
+			// all the magic happens here
+			_windowMinimizer.Minimize(usedFilter.Filter(_windowEnumerator.Enumerate()));
+		}
+		
+		/// <summary>
+		/// Destructor that removes hook and GC protection.
 		/// </summary>
 		~KeyboardHookHandler()
 		{
