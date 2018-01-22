@@ -59,6 +59,10 @@ namespace winmplusplus3
 			// 
 			// trayIcon
 			// 
+			this.trayIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Error;
+			this.trayIcon.BalloonTipText = "Reverting to built-in exceptions for English version of OS. App may work incorrec" +
+	"tly. ";
+			this.trayIcon.BalloonTipTitle = "Unable to load \"exceptions.txt\"";
 			this.trayIcon.ContextMenuStrip = this.trayMenu;
 			this.trayIcon.Icon = global::winmplusplus3.Resources.tray_on;
 			this.trayIcon.Text = "Win-M++";

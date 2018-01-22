@@ -28,6 +28,13 @@ namespace winmplusplus3
 			
 			_autorunManager = autorunManager;
 			_keyboardHookHandler = keyboardHookHandler;
+			
+			// display a notification on load failure
+			if (_keyboardHookHandler.ExclusionsLoadError)
+			{
+				trayIcon.ShowBalloonTip(29000);
+			}
+			
 		}
 		
 		/// <summary>

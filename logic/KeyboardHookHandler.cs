@@ -28,6 +28,11 @@ namespace winmplusplus3
 		private bool _rShiftDown;
 		
 		/// <summary>
+		/// Flag used when "exceptions.txt" was not loaded correctly.
+		/// </summary>
+		public bool ExclusionsLoadError {get; private set;}
+		
+		/// <summary>
 		/// Enumeration to pass which filter to use to BackgroundWorker.
 		/// </summary>
 		private enum MinimizingType
@@ -95,7 +100,7 @@ namespace winmplusplus3
 			catch (ApplicationException)
 			{
 				_excluded = loader.Defaults;
-				// TODO set some kind of flag to display notification via MainForm's trayIcon
+				ExclusionsLoadError = true;
 			}
 			
 			// set the hook
