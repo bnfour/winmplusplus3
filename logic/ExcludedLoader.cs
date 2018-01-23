@@ -13,7 +13,7 @@ namespace winmplusplus3
 		/// <summary>
 		/// File name to look for excluded window titles.
 		/// </summary>
-		private const string _filename = "exceptions.txt";
+		private readonly string _filename = AppDomain.CurrentDomain.BaseDirectory + "\\exceptions.txt";
 		
 		/// <summary>
 		/// Default list for english Win7 and Win10.
