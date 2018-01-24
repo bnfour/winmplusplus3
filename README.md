@@ -5,6 +5,7 @@ This is pretty much my attempt to rewrite [previous version of the app](https://
 ## Usage
 
 **Win+M:** minimize windows on display the currently focused window is on;
+
 **Win+Shift+M:** minimize all windows on all displays, as without this app.
 
 ## Configuration
