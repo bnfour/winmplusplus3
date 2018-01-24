@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Drawing;
+﻿using System;
 using System.Windows.Forms;
 
 namespace winmplusplus3
@@ -16,16 +14,6 @@ namespace winmplusplus3
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-		}
-		
-		/// <summary>
-		/// Form Shown event handler.
-		/// Loads actual version info.
-		/// </summary>
-		/// <param name="sender">Event sender, AboutForm itself.</param>
-		/// <param name="e">Event arguments, unused.</param>
-		private void AboutFormShown(object sender, EventArgs e)
-		{
 			versionLabel.Text = "version " + Application.ProductVersion;
 		}
 		

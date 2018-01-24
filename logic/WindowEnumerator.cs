@@ -59,7 +59,7 @@ namespace winmplusplus3
 		}
 		
 		/// <summary>
-		/// Constructs new Window instance by it's handle.
+		/// Constructs new Window instance by its handle.
 		/// </summary>
 		/// <param name="hwnd">Handle to window.</param>
 		/// <returns>Window instance with set fields.</returns>

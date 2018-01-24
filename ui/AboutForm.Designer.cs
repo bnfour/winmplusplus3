@@ -110,7 +110,6 @@ namespace winmplusplus3
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "About Win-M++";
-			this.Shown += new System.EventHandler(this.AboutFormShown);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

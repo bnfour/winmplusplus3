@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 
 namespace winmplusplus3
 {
@@ -11,8 +8,11 @@ namespace winmplusplus3
 	/// </summary>
 	public partial class MainForm : Form
 	{
+		// AboutForm instance saved here to prevent multiple about forms at once.
 		private AboutForm _aboutForm = new AboutForm();
+		
 		private readonly AutorunManager _autorunManager;
+		
 		private readonly KeyboardHookHandler _keyboardHookHandler;
 		
 		/// <summary>

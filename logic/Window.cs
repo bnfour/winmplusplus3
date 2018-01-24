@@ -27,7 +27,7 @@ namespace winmplusplus3
 		public System.Windows.Forms.Screen Screen {get; private set;}
 		
 		/// <summary>
-		/// 
+		/// Boolean indicating whether this Window is visible on any display.
 		/// </summary>
 		public bool Visible {get; private set;}
 		

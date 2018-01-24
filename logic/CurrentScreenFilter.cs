@@ -7,7 +7,7 @@ namespace winmplusplus3
 	/// Class that filters only otherwise valid Windows (see BasicFilter) which is also 
 	/// on the same screen as currently focused Window.
 	/// </summary>
-	public class CurrentScreenFilter :  BasicFilter, IFilter
+	public class CurrentScreenFilter : BasicFilter, IFilter
 	{
 		/// <summary>
 		/// Field to store currently focused window in order to compare Screens to its Screen.
