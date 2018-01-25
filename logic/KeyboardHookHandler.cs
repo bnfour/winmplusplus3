@@ -12,7 +12,8 @@ namespace winmplusplus3
 	public class KeyboardHookHandler
 	{
 		// keycodes to intercept
-		private const int _winKeyCode = 92;
+		private const int _lWinKeyCode = 91;
+		private const int _rWinKeyCode = 92;
 		private const int _lShiftCode = 160;
 		private const int _rShiftCode = 161;
 		private const int _mCode = 77;
@@ -23,7 +24,8 @@ namespace winmplusplus3
 		private const int WM_KEYUP = 0x0101;
 		
 		// flags to indicate state
-		private bool _winDown;
+		private bool _lWinDown;
+		private bool _rWinDown;
 		private bool _lShiftDown;
 		private bool _rShiftDown;
 		
@@ -133,8 +135,11 @@ namespace winmplusplus3
 				switch (vkCode)
 				{
 					// set modifier flags if necessary
-					case _winKeyCode:
-						_winDown = true;
+					case _lWinKeyCode:
+						_lWinDown = true;
+						break;
+					case _rWinKeyCode:
+						_rWinDown = true;
 						break;
 					case _lShiftCode:
 						_lShiftDown = true;
@@ -143,7 +148,7 @@ namespace winmplusplus3
 						_rShiftDown = true;
 						break;
 					case _mCode:
-						if (_winDown)
+						if (_lWinDown || _rWinDown)
 						{
 							// setting enum based on shift state
 							MinimizingType type = (_lShiftDown || _rShiftDown) ? MinimizingType.AllDisplays :
@@ -161,8 +166,11 @@ namespace winmplusplus3
 			{
 				switch (vkCode)
 				{
-					case _winKeyCode:
-						_winDown = false;
+					case _lWinKeyCode:
+						_lWinDown = false;
+						break;
+					case _rWinKeyCode:
+						_rWinDown = false;
 						break;
 					case _lShiftCode:
 						_lShiftDown = false;
