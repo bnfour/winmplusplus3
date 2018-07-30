@@ -1,12 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// Class that manages loading list of window titles excluded from minimizing.
-	/// Also holds built-in list for english Win7 and Win10.
+	/// Also holds built-in list for English Win 7/8/10.
 	/// </summary>
 	public class ExcludedLoader
 	{

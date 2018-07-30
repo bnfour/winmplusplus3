@@ -5,7 +5,8 @@ using System.Linq;
 namespace winmplusplus3.Logic
 {
 	/// <summary>
-	/// Basic filter class. Filters all windows to visible with non-blank title not in excluded list.
+	/// Basic filter class.
+	/// Filters all windows to visible with non-blank titlenot in excluded list.
 	/// </summary>
 	public class BasicFilter : IFilter
 	{

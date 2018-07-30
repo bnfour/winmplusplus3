@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace winmplusplus3.Logic
 {
 	/// <summary>
-	/// Class that intercepts win-m and win-shift-m hotkeys and calls minimizing accordingly.
+	/// Class that intercepts win-m and win-shift-m hotkeys
+	/// and calls minimizing accordingly.
 	/// </summary>
 	public class KeyboardHookHandler
 	{
@@ -44,10 +45,12 @@ namespace winmplusplus3.Logic
 		/// <param name="lParam">Key code.</param>
 		/// <returns>Pointer to next hook or non-zero pointer
 		/// when hook is fully processed.</returns>
-		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam,
+			IntPtr lParam);
 		
 		/// <summary>
-		/// Used to get all the windows at once and the focused one specifically if necessary.
+		/// Used to get all the windows at once
+		/// and the focused one specifically if necessary.
 		/// </summary>
 		private readonly WindowEnumerator _enumerator = new WindowEnumerator();
 		
@@ -69,6 +72,8 @@ namespace winmplusplus3.Logic
 		
 		/// <summary>
 		/// Boolean indicating whether this hook handler is enabled.
+		/// True by default. That means there's no way to start this app
+		/// in disabled state.
 		/// </summary>
 		public bool Enabled = true;
 		
@@ -106,7 +111,8 @@ namespace winmplusplus3.Logic
 		/// </summary>
 		private IntPtr HandleHook(int nCode, IntPtr wParam, IntPtr lParam)
 		{
-			// if hook is disabled, we just pass on to the next one in chain
+			// if hook is disabled or keycode is nonsense
+			// we just pass on to the next hook in chain
 			if (!Enabled || nCode < 0)
 			{
 				return CallNextHookEx(_hookId, nCode, wParam, lParam);

@@ -75,15 +75,12 @@ namespace winmplusplus3.Logic
 		/// Returns Window which is currently focused.
 		/// </summary>
 		/// <returns>Foreground window as Window.</returns>
-		public Window GetForeground()
-		{
-			return ConstructWindow(GetForegroundWindow());
-		}
+		public Window GetForeground() => ConstructWindow(GetForegroundWindow());
 		
 		/// <summary>
 		/// Enumerates all windows in system.
 		/// </summary>
-		/// <returns>List of Windows in system.</returns>
+		/// <returns>Enumerable of Windows in system.</returns>
 		public IEnumerable<Window> Enumerate()
 		{
 			_windows.Clear();
@@ -107,15 +104,13 @@ namespace winmplusplus3.Logic
 		/// <summary>
 		/// Destructor which removes handle.
 		/// </summary>
-		~WindowEnumerator()
-		{
-			gch.Free();
-		}
+		~WindowEnumerator() => gch.Free();
 		
 		// winapi imports below
 		
 		[DllImport("user32.dll")] 
-		private static extern int GetWindowText(IntPtr hWnd, StringBuilder strText, int maxCount); 
+		private static extern int GetWindowText(IntPtr hWnd, StringBuilder strText,
+			int maxCount); 
 		
 		[DllImport("user32.dll")] 
 		private static extern int GetWindowTextLength(IntPtr hWnd); 
@@ -127,6 +122,7 @@ namespace winmplusplus3.Logic
 		private static extern IntPtr GetForegroundWindow();
 		
 		[DllImport("user32.dll")]
-		private static extern bool EnumWindows(EnumWindowsCallback enumProc, IntPtr lParam);
+		private static extern bool EnumWindows(EnumWindowsCallback enumProc,
+			IntPtr lParam);
 	}
 }
