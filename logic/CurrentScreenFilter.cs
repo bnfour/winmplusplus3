@@ -10,7 +10,8 @@ namespace winmplusplus3.Logic
 	public class CurrentScreenFilter : BasicFilter, IFilter
 	{
 		/// <summary>
-		/// Field to store currently focused window in order to compare Screens to its Screen.
+		/// Field to store currently focused window in order
+		/// to compare Screens to its Screen.
 		/// </summary>
 		private readonly Window _foregroundWindow;
 		
@@ -19,7 +20,8 @@ namespace winmplusplus3.Logic
 		/// </summary>
 		/// <param name="toExclude">List of windows titles to exclude from filtered list.</param>
 		/// <param name="foregroundWindow">Currently focused Window.</param>
-		public CurrentScreenFilter(List<string> toExclude, Window foregroundWindow): base(toExclude)
+		public CurrentScreenFilter(IReadOnlyCollection<string> toExclude,
+			Window foregroundWindow) : base(toExclude)
 		{
 			_foregroundWindow = foregroundWindow;
 		}

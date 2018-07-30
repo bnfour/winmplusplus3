@@ -41,7 +41,8 @@ namespace winmplusplus3.Logic
 		/// we must call CallNextHookEx.</param>
 		/// <param name="wParam">Event type, such as WM_KEYUP.</param>
 		/// <param name="lParam">Key code.</param>
-		/// <returns>Pointer to next hook or non-zero pointer when hook is fully processed.</returns>
+		/// <returns>Pointer to next hook or non-zero pointer
+		/// when hook is fully processed.</returns>
 		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 		
 		/// <summary>
@@ -71,16 +72,15 @@ namespace winmplusplus3.Logic
 		public bool Enabled = true;
 		
 		/// <summary>
-		/// List that holds titles of windows not to minimize.
+		/// Collection that holds titles of windows not to minimize.
 		/// </summary>
-		private readonly List<string> _excluded;
+		private readonly IReadOnlyCollection<string> _excluded;
 		
 		/// <summary>
 		/// Constructor that sets the hook.
 		/// </summary>
 		public KeyboardHookHandler()
 		{
-			// load exclusions
 			var loader = new ExcludedLoader();
 			try
 			{
@@ -93,7 +93,7 @@ namespace winmplusplus3.Logic
 			}
 			// set the hook
 			string curModuleName = Process.GetCurrentProcess().MainModule.ModuleName;
-			var callback = new LowLevelKeyboardProc(this.HandleHook);
+			var callback = new LowLevelKeyboardProc(HandleHook);
 			// GC protection
 			gch = GCHandle.Alloc(callback);
 			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, callback,

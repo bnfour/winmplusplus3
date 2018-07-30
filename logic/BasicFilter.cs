@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace winmplusplus3.Logic
 {
@@ -11,20 +12,22 @@ namespace winmplusplus3.Logic
 		/// <summary>
 		/// Field to store exclusions passed to constructor.
 		/// </summary>
-		private readonly List<string> _excluded;
+		private readonly IReadOnlyCollection<string> _excluded;
 		
 		/// <summary>
 		/// Class constructor.
 		/// </summary>
-		/// <param name="toExclude">List of windows titles to exclude from filtered list.</param>
-		public BasicFilter(List<string> toExclude)
+		/// <param name="toExclude">Collection of windows titles 
+		/// to exclude from filtered list.</param>
+		public BasicFilter(IReadOnlyCollection<string> toExclude)
 		{
 			_excluded = toExclude;
 		}
 		
 		/// <summary>
 		/// Actual filtering method.
-		/// To pass through Window must be visible and have non-blank name not in excluded list.
+		/// To pass through Window must be visible 
+		/// and have non-blank name not in excluded list.
 		/// </summary>
 		/// <param name="toFilter">List of Windows to filter.</param>
 		/// <returns>Filtered list.</returns>
@@ -33,7 +36,8 @@ namespace winmplusplus3.Logic
 			var filtered = new List<Window>();
 			foreach (var window in toFilter)
 			{
-				if (window.Visible && window.Title.Length > 0 && !_excluded.Contains(window.Title))
+				if (window.Visible && window.Title.Length > 0
+					&& !_excluded.Contains(window.Title))
 				{
 					filtered.Add(window);
 				}

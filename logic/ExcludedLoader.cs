@@ -11,39 +11,40 @@ namespace winmplusplus3.Logic
 	public class ExcludedLoader
 	{
 		/// <summary>
-		/// File name to look for excluded window titles.
+		/// (Hardcoded) file name to look for excluded window titles.
 		/// </summary>
-		private readonly string _filename = AppDomain.CurrentDomain.BaseDirectory + "\\exceptions.txt";
-		
+		private readonly string _filename = AppDomain.CurrentDomain.BaseDirectory
+			+ "\\exceptions.txt";
+
 		/// <summary>
-		/// Default list for english Win7 and Win10.
+		/// Variable to cache load results.
 		/// </summary>
-		public List<string> Defaults
-		{
-			get { return new List<string> {"Start", "Start menu", "Program Manager"}; }
-		}
-		
+		private IReadOnlyCollection<string> _excluded = null;
+
 		/// <summary>
-		/// List loaded from file.
+		/// Fallback entries for English Win 7/8/10.
 		/// </summary>
-		public List<string> Excluded
+		private static List<string> _defaults = new List<string>()
 		{
-			get { return Load(); }
-		}
-		
+			"Start", "Start menu", "Program Manager"
+		};
+
 		/// <summary>
-		/// Constructor that does literally nothing.
+		/// Property to access default values.
 		/// </summary>
-		public ExcludedLoader()
-		{
-		}
+		public IReadOnlyCollection<string> Defaults => _defaults.AsReadOnly();
+
+		/// <summary>
+		/// Exclusions loaded from file.
+		/// </summary>
+		public IReadOnlyCollection<string> Excluded => _excluded ?? (_excluded = Load());
 		
 		/// <summary>
 		/// Method to load exclusions from file.
 		/// Throws ApplicationException on IO errors.
 		/// </summary>
 		/// <returns>Loaded list of window titles.</returns>
-		private List<string> Load()
+		private IReadOnlyCollection<string> Load()
 		{
 			var loaded = new List<string>();
 			try
@@ -55,11 +56,12 @@ namespace winmplusplus3.Logic
 						loaded.Add(sr.ReadLine());
 					}
 				}
-				return loaded;
+				return loaded.AsReadOnly();
 			}
 			catch (IOException)
 			{
-				throw new ApplicationException(String.Format("Unable to load file {0}", _filename));
+				throw new ApplicationException(String.Format("Unable to load file {0}",
+					_filename));
 			}
 		}
 	}
