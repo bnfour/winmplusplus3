@@ -87,12 +87,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="ui\AboutForm.cs" />
-    <Compile Include="ui\AboutForm.Designer.cs">
+    <Compile Include="UI\AboutForm.cs" />
+    <Compile Include="UI\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\MainForm.cs" />
-    <Compile Include="ui\MainForm.Designer.cs">
+    <Compile Include="UI\MainForm.cs" />
+    <Compile Include="UI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -106,17 +106,13 @@
     <None Include="images\tray_off.ico" />
     <None Include="images\tray_on.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="images" />
-    <Folder Include="logic" />
-    <Folder Include="ui" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="ui\MainForm.resx">
+    <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

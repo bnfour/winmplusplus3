@@ -1,5 +1,5 @@
 ﻿
-namespace winmplusplus3
+namespace winmplusplus3.UI
 {
 	partial class AboutForm
 	{

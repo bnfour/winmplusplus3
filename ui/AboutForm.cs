@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace winmplusplus3
+namespace winmplusplus3.UI
 {
 	/// <summary>
 	/// Description of AboutForm.

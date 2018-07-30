@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using winmplusplus3.UI;
+
 namespace winmplusplus3
 {
 	/// <summary>
