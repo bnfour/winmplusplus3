@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace winmplusplus3.Logic
 {
@@ -23,7 +23,7 @@ namespace winmplusplus3.Logic
 		private const int WM_KEYDOWN = 0x0100;
 		private const int WM_KEYUP = 0x0101;
 		
-		// flags to indicate state
+		// flags to indicate modifier key states
 		private bool _lWinDown;
 		private bool _rWinDown;
 		private bool _lShiftDown;
@@ -33,30 +33,16 @@ namespace winmplusplus3.Logic
 		/// Flag used when "exceptions.txt" was not loaded correctly.
 		/// </summary>
 		public bool ExclusionsLoadError {get; private set;}
-		
-		/// <summary>
-		/// Enumeration to pass which filter to use to BackgroundWorker.
-		/// </summary>
-		private enum MinimizingType
-		{
-			AllDisplays,   // corresponds to BasicFilter
-			CurrentDisplay // to CurrentScreenFilter
-		}
-		
+
 		/// <summary>
 		/// Delegate for low-level keyboard hook callback.
 		/// </summary>
-		/// <param name="nCode">Process parameter. If less than zero, we must call CallNextHookEx.</param>
+		/// <param name="nCode">Process parameter. If less than zero,
+		/// we must call CallNextHookEx.</param>
 		/// <param name="wParam">Event type, such as WM_KEYUP.</param>
 		/// <param name="lParam">Key code.</param>
 		/// <returns>Pointer to next hook or non-zero pointer when hook is fully processed.</returns>
 		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-		
-		/// <summary>
-		/// Used to run minimizing code asynchronously.
-		/// OS might drop our hook handler if it's slow, so we just do all the heavy lifting in a separate thread.
-		/// </summary>
-		private readonly BackgroundWorker _backgroundWorker = new BackgroundWorker();
 		
 		/// <summary>
 		/// Used to get all the windows at once and the focused one specifically if necessary.
@@ -74,7 +60,8 @@ namespace winmplusplus3.Logic
 		private readonly IntPtr _hookId;
 		
 		/// <summary>
-		/// Handle to hook callback delegate. Used to prevent it being eaten alive by GC causing crashes.
+		/// Handle to hook callback delegate. Used to prevent it being eaten alive
+		/// by GC causing crashes.
 		/// </summary>
 		private readonly GCHandle gch;
 		
@@ -104,16 +91,13 @@ namespace winmplusplus3.Logic
 				_excluded = loader.Defaults;
 				ExclusionsLoadError = true;
 			}
-			
 			// set the hook
 			string curModuleName = Process.GetCurrentProcess().MainModule.ModuleName;
 			var callback = new LowLevelKeyboardProc(this.HandleHook);
-			gch = GCHandle.Alloc(callback); // GC protection
-			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, callback, GetModuleHandle(curModuleName), 0);
-			
-			// configure the BackgroundWorker
-			_backgroundWorker.DoWork += new DoWorkEventHandler(this.DoWork);
-			
+			// GC protection
+			gch = GCHandle.Alloc(callback);
+			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, callback,
+				GetModuleHandle(curModuleName), 0);
 		}
 		
 		/// <summary>
@@ -150,11 +134,8 @@ namespace winmplusplus3.Logic
 					case _mCode:
 						if (_lWinDown || _rWinDown)
 						{
-							// setting enum based on shift state
-							MinimizingType type = (_lShiftDown || _rShiftDown) ? MinimizingType.AllDisplays :
-								MinimizingType.CurrentDisplay;
-							
-							_backgroundWorker.RunWorkerAsync(type);
+							// fire and forget, no awaiting
+							Task.Run(() => DoWork());
 							// prevents other apps from processing this keypress
 							return (IntPtr)1;
 						}
@@ -185,31 +166,16 @@ namespace winmplusplus3.Logic
 		}
 		
 		/// <summary>
-		/// Event hander for the BackgroundWorker. Run in a separate thread.
-		/// Does minimization of windows.
+		/// Minimizes windows based on Shift key state: if any pressed, uses BasicFilter,
+		/// else uses CurrentScreenFilter. Runs as Task on separate thread.
 		/// </summary>
-		/// <param name="sender">Event sender, unused.</param>
-		/// <param name="e">Event arguments. A MinimizingType instance is boxed within e.Argument.</param>
-		private void DoWork(object sender, DoWorkEventArgs e)
+		private void DoWork()
 		{
-			// this (un)boxing is unfortunate
-			var type = (MinimizingType)e.Argument;
-			IFilter usedFilter;
-			switch (type)
-			{
-				case MinimizingType.AllDisplays:
-					usedFilter = new BasicFilter(_excluded);
-					break;
-				case MinimizingType.CurrentDisplay:
-					usedFilter = new CurrentScreenFilter(_excluded, _windowEnumerator.GetForeground());
-					break;
-				default:
-					// this should never happen, but whatever makes compiler happy
-					// prevents CS0165, use of unassgned variable `usedFilter'
-					throw new ArgumentException("Unknown MinimizingType enum value.");
-			}
-			// all the magic happens here
-			_windowMinimizer.Minimize(usedFilter.Filter(_windowEnumerator.Enumerate()));
+			IFilter filterToUse = (_lShiftDown || _rShiftDown) ?
+				new BasicFilter(_excluded) :
+				new CurrentScreenFilter(_excluded, _windowEnumerator.GetForeground());
+
+			_windowMinimizer.Minimize(filterToUse.Filter(_windowEnumerator.Enumerate()));
 		}
 		
 		/// <summary>
@@ -225,8 +191,7 @@ namespace winmplusplus3.Logic
 		
 		[DllImport("user32.dll")]
 		private static extern IntPtr SetWindowsHookEx(int idHook,
-		                                              LowLevelKeyboardProc lpfn, 
-		                                              IntPtr hMod, uint dwThreadId);
+			LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -234,7 +199,7 @@ namespace winmplusplus3.Logic
 
 		[DllImport("user32.dll")]
 		private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
-		                                            IntPtr wParam, IntPtr lParam);
+			IntPtr wParam, IntPtr lParam);
 
 		[DllImport("kernel32.dll")]
 		private static extern IntPtr GetModuleHandle(string lpModuleName);
