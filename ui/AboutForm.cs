@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using Process = System.Diagnostics.Process;
+
 namespace winmplusplus3.UI
 {
 	/// <summary>
@@ -24,8 +26,6 @@ namespace winmplusplus3.UI
 		/// <param name="sender">Event sender, linkLabel.</param>
 		/// <param name="e">Event arguments, unused.</param>
 		private void LinkLabelLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start(linkLabel.Text);
-		}
+			=> Process.Start(linkLabel.Text);
 	}
 }

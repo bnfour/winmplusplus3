@@ -10,7 +10,9 @@ namespace winmplusplus3.UI
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		// AboutForm instance saved here to prevent multiple about forms at once.
+		/// <summary>
+		/// AboutForm instance is saved here to prevent multiple about forms at once.
+		/// </summary>
 		private AboutForm _aboutForm = new AboutForm();
 		
 		private readonly AutorunManager _autorunManager;
@@ -20,7 +22,8 @@ namespace winmplusplus3.UI
 		/// <summary>
 		/// MainForm constructor.
 		/// </summary>
-		public MainForm(AutorunManager autorunManager, KeyboardHookHandler keyboardHookHandler)
+		public MainForm(AutorunManager autorunManager,
+			KeyboardHookHandler keyboardHookHandler)
 		{
 			//
 			// The InitializeComponent() call is required 
@@ -45,10 +48,7 @@ namespace winmplusplus3.UI
 		/// </summary>
 		/// <param name="sender">Event sender, MainForm itself.</param>
 		/// <param name="e">Event arguments, unused.</param>
-		private void MainFormShown(object sender, EventArgs e)
-		{
-			Hide();
-		}
+		private void MainFormShown(object sender, EventArgs e) => Hide();
 		
 		/// <summary>
 		/// Handler for "Enabled" item in the tray menu.
@@ -69,9 +69,7 @@ namespace winmplusplus3.UI
 		/// <param name="sender">Event sender, runAtStartupToolStripMenuItem.</param>
 		/// <param name="e">Event arguments, unused.</param>
 		private void RunAtStartupToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			_autorunManager.AutorunEnabled = runAtStartupToolStripMenuItem.Checked;
-		}
+			=> _autorunManager.AutorunEnabled = runAtStartupToolStripMenuItem.Checked;
 		
 		/// <summary>
 		/// Handler for "About Win-M++" item in the tray menu.
@@ -104,13 +102,12 @@ namespace winmplusplus3.UI
 		/// <param name="sender">Event sender, quitToolStripMenuItem.</param>
 		/// <param name="e">Event arguments, unused.</param>
 		private void QuitToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			Application.Exit();
-		}
+			=> Application.Exit();
 		
 		/// <summary>
 		/// Handler for trayMenu's Opened event.
-		/// Re-checks startup state to prevent bad behavior when registry key changes by third party.
+		/// Re-checks startup state to prevent bad behavior
+		/// when registry key is changed by third party.
 		/// Also re-checks whether hook is enabled.
 		/// </summary>
 		/// <param name="sender">Event sender, trayMenu.</param>
@@ -125,9 +122,9 @@ namespace winmplusplus3.UI
 		/// Sets the tray icon menu according to hook state.
 		/// </summary>
 		private void UpdateIcon()
-		{
-			trayIcon.Icon = (_keyboardHookHandler.Enabled)? Resources.tray_on: Resources.tray_off;
-		}
+			=> trayIcon.Icon = (_keyboardHookHandler.Enabled) ?
+				Resources.tray_on :
+				Resources.tray_off;
 		
 		/// <summary>
 		/// Tray icon double click handler.
