@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace winmplusplus3.Logic
 {
@@ -31,7 +31,7 @@ namespace winmplusplus3.Logic
 		/// </summary>
 		public WindowEnumerator()
 		{
-			callback = new EnumWindowsCallback(this.Callback);
+			callback = new EnumWindowsCallback(Callback);
 			// better safe than sorry, I've wasted ~8 hours before finding this
 			gch = GCHandle.Alloc(callback);
 		}
@@ -84,7 +84,7 @@ namespace winmplusplus3.Logic
 		/// Enumerates all windows in system.
 		/// </summary>
 		/// <returns>List of Windows in system.</returns>
-		public List<Window> Enumerate()
+		public IEnumerable<Window> Enumerate()
 		{
 			_windows.Clear();
 			EnumWindows(callback, IntPtr.Zero);
