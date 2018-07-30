@@ -24,6 +24,21 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>False</RunCodeAnalysis>
     <SourceAnalysisOverrideSettingsFile>C:\Users\me\AppData\Roaming\ICSharpCode\SharpDevelop5\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -72,15 +87,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="logic\AutorunManager.cs" />
-    <Compile Include="logic\BasicFilter.cs" />
-    <Compile Include="logic\CurrentScreenFilter.cs" />
-    <Compile Include="logic\ExcludedLoader.cs" />
-    <Compile Include="logic\IFilter.cs" />
-    <Compile Include="logic\KeyboardHookHandler.cs" />
-    <Compile Include="logic\Window.cs" />
-    <Compile Include="logic\WindowEnumerator.cs" />
-    <Compile Include="logic\WindowMinimizer.cs" />
+    <Compile Include="Logic\AutorunManager.cs" />
+    <Compile Include="Logic\BasicFilter.cs" />
+    <Compile Include="Logic\CurrentScreenFilter.cs" />
+    <Compile Include="Logic\ExcludedLoader.cs" />
+    <Compile Include="Logic\IFilter.cs" />
+    <Compile Include="Logic\KeyboardHookHandler.cs" />
+    <Compile Include="Logic\Window.cs" />
+    <Compile Include="Logic\WindowEnumerator.cs" />
+    <Compile Include="Logic\WindowMinimizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -106,7 +121,18 @@
     <None Include="images\tray_off.ico" />
     <None Include="images\tray_on.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace winmplusplus3
+namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// Class that holds read-only data about window needed for app's operation:

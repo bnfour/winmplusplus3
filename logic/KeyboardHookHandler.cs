@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace winmplusplus3
+namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// Class that intercepts win-m and win-shift-m hotkeys and calls minimizing accordingly.

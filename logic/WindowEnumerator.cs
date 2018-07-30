@@ -3,7 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace winmplusplus3
+namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// Class that incapsulates getting actual window info as instances of Window.
@@ -116,7 +116,7 @@ namespace winmplusplus3
 		
 		[DllImport("user32.dll")] 
 		private static extern int GetWindowText(IntPtr hWnd, StringBuilder strText, int maxCount); 
-        
+		
 		[DllImport("user32.dll")] 
 		private static extern int GetWindowTextLength(IntPtr hWnd); 
 		

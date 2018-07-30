@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace winmplusplus3
+namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// Basic filter class. Filters all windows to visible with non-blank title not in excluded list.

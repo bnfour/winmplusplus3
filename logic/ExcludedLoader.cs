@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 
-namespace winmplusplus3
+namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// Class that manages loading list of window titles excluded from minimizing.
