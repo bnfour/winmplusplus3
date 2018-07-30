@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -49,12 +49,12 @@ namespace winmplusplus3.Logic
 		/// <summary>
 		/// Used to get all the windows at once and the focused one specifically if necessary.
 		/// </summary>
-		private readonly WindowEnumerator _windowEnumerator = new WindowEnumerator();
+		private readonly WindowEnumerator _enumerator = new WindowEnumerator();
 		
 		/// <summary>
 		/// Used to actually minimize windows.
 		/// </summary>
-		private readonly WindowMinimizer _windowMinimizer = new WindowMinimizer();
+		private readonly WindowMinimizer _minimizer = new WindowMinimizer();
 		
 		/// <summary>
 		/// Pointer to hook, used to disable it.
@@ -174,14 +174,17 @@ namespace winmplusplus3.Logic
 		{
 			IFilter filterToUse = (_lShiftDown || _rShiftDown) ?
 				new BasicFilter(_excluded) :
-				new CurrentScreenFilter(_excluded, _windowEnumerator.GetForeground());
+				new CurrentScreenFilter(_excluded, _enumerator.GetForeground());
 			// yay linq
-			var windowToMinimizeQuery =
-				from w in _windowEnumerator.Enumerate()
+			var windowsToMinimizeQuery =
+				from w in _enumerator.Enumerate()
 				where filterToUse.Filter(w)
 				select w;
 
-			_windowMinimizer.Minimize(windowToMinimizeQuery.ToList());
+			foreach (var w in windowsToMinimizeQuery)
+			{
+				_minimizer.Minimize(w);
+			}
 		}
 		
 		/// <summary>
