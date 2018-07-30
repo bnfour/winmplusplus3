@@ -5,13 +5,13 @@ using Screen = System.Windows.Forms.Screen;
 namespace winmplusplus3.Logic
 {
 	/// <summary>
-	/// Class that holds read-only data about window needed for app's operation:
+	/// Struct that holds read-only data about window needed for app's operation:
 	/// window handle for minimizing;
 	/// window title for checking for excluded windows;
 	/// Screen window is on for filtering;
 	/// whether window is visible.
 	/// </summary>
-	public class Window
+	public struct Window
 	{
 		/// <summary>
 		/// Window handle.
@@ -40,7 +40,7 @@ namespace winmplusplus3.Logic
 		/// <param name="title">Window title to set.</param>
 		/// <param name="screen">Screen to set.</param>
 		/// <param name="visible">Whether window is visible.</param>
-		public Window(IntPtr hwnd, string title, Screen screen, bool visible)
+		public Window(IntPtr hwnd, string title, Screen screen, bool visible) : this()
 		{
 			hWnd = hwnd;
 			Title = title;
