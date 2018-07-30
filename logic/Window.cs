@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Screen = System.Windows.Forms.Screen;
+
 namespace winmplusplus3.Logic
 {
 	/// <summary>
@@ -24,7 +26,7 @@ namespace winmplusplus3.Logic
 		/// <summary>
 		/// Screen most of the window reside on.
 		/// </summary>
-		public System.Windows.Forms.Screen Screen {get; private set;}
+		public Screen Screen {get; private set;}
 		
 		/// <summary>
 		/// Boolean indicating whether this Window is visible on any display.
@@ -38,7 +40,7 @@ namespace winmplusplus3.Logic
 		/// <param name="title">Window title to set.</param>
 		/// <param name="screen">Screen to set.</param>
 		/// <param name="visible">Whether window is visible.</param>
-		public Window(IntPtr hwnd, string title, System.Windows.Forms.Screen screen, bool visible)
+		public Window(IntPtr hwnd, string title, Screen screen, bool visible)
 		{
 			hWnd = hwnd;
 			Title = title;
