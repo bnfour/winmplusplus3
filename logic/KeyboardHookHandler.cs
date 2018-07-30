@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -174,8 +175,13 @@ namespace winmplusplus3.Logic
 			IFilter filterToUse = (_lShiftDown || _rShiftDown) ?
 				new BasicFilter(_excluded) :
 				new CurrentScreenFilter(_excluded, _windowEnumerator.GetForeground());
+			// yay linq
+			var windowToMinimizeQuery =
+				from w in _windowEnumerator.Enumerate()
+				where filterToUse.Filter(w)
+				select w;
 
-			_windowMinimizer.Minimize(filterToUse.Filter(_windowEnumerator.Enumerate()));
+			_windowMinimizer.Minimize(windowToMinimizeQuery.ToList());
 		}
 		
 		/// <summary>

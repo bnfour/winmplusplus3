@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Screen = System.Windows.Forms.Screen;
+
 namespace winmplusplus3.Logic
 {
 	/// <summary>
@@ -13,38 +15,31 @@ namespace winmplusplus3.Logic
 		/// Field to store currently focused window in order
 		/// to compare Screens to its Screen.
 		/// </summary>
-		private readonly Window _foregroundWindow;
+		private readonly Screen _foregroundWindowScreen;
 		
 		/// <summary>
 		/// Class constructor.
 		/// </summary>
-		/// <param name="toExclude">List of windows titles to exclude from filtered list.</param>
+		/// <param name="toExclude">List of windows titles
+		/// to exclude from filtered list.</param>
 		/// <param name="foregroundWindow">Currently focused Window.</param>
 		public CurrentScreenFilter(IReadOnlyCollection<string> toExclude,
 			Window foregroundWindow) : base(toExclude)
 		{
-			_foregroundWindow = foregroundWindow;
+			_foregroundWindowScreen = foregroundWindow.Screen;
 		}
-		
+
 		/// <summary>
-		/// Actual filtering method, calls BasicFilter.Filter() first.
-		/// Only Windows on the same Screen with the currently focused one pass through.
+		/// Fitering predicate.
+		/// To pass through Window must be visible 
+		/// and have non-blank name not in excluded list
+		/// and have Screen property that matches Screen set in this filter's constructor.
 		/// </summary>
-		/// <param name="toFilter">List of Windows to filter.</param>
-		/// <returns>Filtered list.</returns>
-		public new List<Window> Filter(List<Window> toFilter)
+		/// <param name="window">Window to check minimizing eligibility for.</param>
+		/// <returns>True if window should be minimized, false otherwise.</returns>
+		public override bool Filter(Window window)
 		{
-			var screen  = _foregroundWindow.Screen;
-			var filtered = new List<Window>();
-			
-			foreach (var window in base.Filter(toFilter))
-			{
-				if (window.Screen.Equals(screen))
-				{
-					filtered.Add(window);
-				}
-			}
-			return filtered;
+			return base.Filter(window) && window.Screen.Equals(_foregroundWindowScreen);
 		}
 	}
 }

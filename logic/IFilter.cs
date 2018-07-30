@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace winmplusplus3.Logic
+﻿namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// An interface for Window filter.
-	/// Takes List<Window> as argument, filters off some Windows based on some criteria and returns filtered list.
+	/// Declares a predicate that should return true if a Window instance should be
+	/// minimized according to that filter.
 	/// </summary>
 	public interface IFilter
 	{
 		/// <summary>
-		/// The filter method.
+		/// The filter predicate.
 		/// </summary>
-		/// <param name="toFilter">List of Windows to filter.</param>
-		/// <returns>Filtered list.</returns>
-		List<Window> Filter(List<Window> toFilter);
+		/// <param name="window">Window to check minimizing eligibility for.</param>
+		/// <returns>True if window should be minimized, false otherwise.</returns>
+		bool Filter(Window window);
 	}
 }

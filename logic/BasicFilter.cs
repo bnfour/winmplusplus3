@@ -23,26 +23,18 @@ namespace winmplusplus3.Logic
 		{
 			_excluded = toExclude;
 		}
-		
+
 		/// <summary>
-		/// Actual filtering method.
+		/// Fitering predicate.
 		/// To pass through Window must be visible 
 		/// and have non-blank name not in excluded list.
 		/// </summary>
-		/// <param name="toFilter">List of Windows to filter.</param>
-		/// <returns>Filtered list.</returns>
-		public List<Window> Filter(List<Window> toFilter)
+		/// <param name="window">Window to check minimizing eligibility for.</param>
+		/// <returns>True if window should be minimized, false otherwise.</returns>
+		public virtual bool Filter(Window window)
 		{
-			var filtered = new List<Window>();
-			foreach (var window in toFilter)
-			{
-				if (window.Visible && window.Title.Length > 0
-					&& !_excluded.Contains(window.Title))
-				{
-					filtered.Add(window);
-				}
-			}
-			return filtered;
+			return window.Visible && window.Title.Length > 0
+				&& !_excluded.Contains(window.Title);
 		}
 	}
 }
