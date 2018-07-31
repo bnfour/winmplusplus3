@@ -87,11 +87,11 @@ namespace winmplusplus3.UI
 			// labelInfo
 			// 
 			this.labelInfo.AutoSize = true;
-			this.labelInfo.Location = new System.Drawing.Point(108, 76);
+			this.labelInfo.Location = new System.Drawing.Point(85, 77);
 			this.labelInfo.Name = "labelInfo";
 			this.labelInfo.Size = new System.Drawing.Size(110, 13);
 			this.labelInfo.TabIndex = 4;
-			this.labelInfo.Text = "by Bn4, January 2018";
+			this.labelInfo.Text = "by Bn4. January, July 2018";
 			this.labelInfo.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// AboutForm
