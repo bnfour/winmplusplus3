@@ -18,18 +18,27 @@ namespace winmplusplus3.Logic
 		private const int _rWinKeyCode = 92;
 		private const int _lShiftCode = 160;
 		private const int _rShiftCode = 161;
+
 		private const int _mCode = 77;
-		
+
+		/// <summary>
+		/// Dictionary to store relevalnt modifier states.
+		/// True means key is pressed right now.
+		/// </summary>
+		private readonly Dictionary<int, bool> _modifiers = new Dictionary<int, bool>()
+		{
+			// it is _supposed_ that no other keys should be added
+			// this isn't enforced though, there's no dict with fixed Keys AFAIK
+			[_lWinKeyCode] = false,
+			[_rWinKeyCode] = false,
+			[_lShiftCode] = false,
+			[_rShiftCode] = false
+		};
+
 		// Winapi constants
 		private const int WH_KEYBOARD_LL = 0xD;
 		private const int WM_KEYDOWN = 0x0100;
 		private const int WM_KEYUP = 0x0101;
-		
-		// flags to indicate modifier key states
-		private bool _lWinDown;
-		private bool _rWinDown;
-		private bool _lShiftDown;
-		private bool _rShiftDown;
 		
 		/// <summary>
 		/// Flag used when "exceptions.txt" was not loaded correctly.
@@ -123,49 +132,27 @@ namespace winmplusplus3.Logic
 			
 			if (param == WM_KEYDOWN)
 			{
-				switch (vkCode)
+				if (_modifiers.Keys.Contains(vkCode))
 				{
-					// set modifier flags if necessary
-					case _lWinKeyCode:
-						_lWinDown = true;
-						break;
-					case _rWinKeyCode:
-						_rWinDown = true;
-						break;
-					case _lShiftCode:
-						_lShiftDown = true;
-						break;
-					case _rShiftCode:
-						_rShiftDown = true;
-						break;
-					case _mCode:
-						if (_lWinDown || _rWinDown)
-						{
-							// fire and forget, no awaiting
-							Task.Run(() => DoWork());
-							// prevents other apps from processing this keypress
-							return (IntPtr)1;
-						}
-						break;
+					_modifiers[vkCode] = true;
+				}
+				else if (vkCode == _mCode)
+				{
+					if (_modifiers[_lWinKeyCode] || _modifiers[_rWinKeyCode])
+					{
+						// fire and forget, no awaiting
+						Task.Run(() => DoWork());
+						// prevents other apps from processing this keypress
+						return (IntPtr)1;
+					}
 				}
 			}
 			// reset relevant flag on keyup
 			else if (param == WM_KEYUP)
 			{
-				switch (vkCode)
+				if (_modifiers.Keys.Contains(vkCode))
 				{
-					case _lWinKeyCode:
-						_lWinDown = false;
-						break;
-					case _rWinKeyCode:
-						_rWinDown = false;
-						break;
-					case _lShiftCode:
-						_lShiftDown = false;
-						break;
-					case _rShiftCode:
-						_rShiftDown = false;
-						break;
+					_modifiers[vkCode] = false;
 				}
 			}
 			// if it's neither win-m nor win-shift-m, pass on
@@ -178,7 +165,7 @@ namespace winmplusplus3.Logic
 		/// </summary>
 		private void DoWork()
 		{
-			IFilter filterToUse = (_lShiftDown || _rShiftDown) ?
+			IFilter filterToUse = (_modifiers[_lShiftCode] || _modifiers[_rShiftCode]) ?
 				new BasicFilter(_excluded) :
 				new CurrentScreenFilter(_excluded, _enumerator.GetForeground());
 			// yay linq
