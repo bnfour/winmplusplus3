@@ -22,17 +22,28 @@ namespace winmplusplus3.Logic
 		private const int _mCode = 77;
 
 		/// <summary>
-		/// Dictionary to store relevalnt modifier states.
-		/// True means key is pressed right now.
+		/// Amount of time after which modifier press considered invalid.
+		/// Used to fix first M key down event minimizing after Win+L hotkey:
+		/// Windows locking actually prevents "Win key down" event from reaching the app
+		/// and win key is considered pressed until it is pressed again after unlock.
 		/// </summary>
-		private readonly Dictionary<int, bool> _modifiers = new Dictionary<int, bool>()
+		private readonly TimeSpan _dropThreshold = TimeSpan.FromSeconds(10);
+
+
+		/// <summary>
+		/// Dictionary to store relevalnt modifier states.
+		/// If key is believed to be pressed, this stores time of the press.
+		/// Null means key isn't pressed now.
+		/// </summary>
+		private readonly Dictionary<int, DateTime?> _modifiers
+		= new Dictionary<int, DateTime?>()
 		{
 			// it is _supposed_ that no other keys should be added
 			// this isn't enforced though, there's no dict with fixed Keys AFAIK
-			[_lWinKeyCode] = false,
-			[_rWinKeyCode] = false,
-			[_lShiftCode] = false,
-			[_rShiftCode] = false
+			[_lWinKeyCode] = null,
+			[_rWinKeyCode] = null,
+			[_lShiftCode] = null,
+			[_rShiftCode] = null
 		};
 
 		// Winapi constants
@@ -134,11 +145,12 @@ namespace winmplusplus3.Logic
 			{
 				if (_modifiers.Keys.Contains(vkCode))
 				{
-					_modifiers[vkCode] = true;
+					_modifiers[vkCode] = DateTime.Now;
 				}
 				else if (vkCode == _mCode)
 				{
-					if (_modifiers[_lWinKeyCode] || _modifiers[_rWinKeyCode])
+					if (_modifiers[_lWinKeyCode].HasValue
+						|| _modifiers[_rWinKeyCode].HasValue)
 					{
 						// fire and forget, no awaiting
 						Task.Run(() => DoWork());
@@ -152,7 +164,7 @@ namespace winmplusplus3.Logic
 			{
 				if (_modifiers.Keys.Contains(vkCode))
 				{
-					_modifiers[vkCode] = false;
+					_modifiers[vkCode] = null;
 				}
 			}
 			// if it's neither win-m nor win-shift-m, pass on
@@ -165,7 +177,27 @@ namespace winmplusplus3.Logic
 		/// </summary>
 		private void DoWork()
 		{
-			IFilter filterToUse = (_modifiers[_lShiftCode] || _modifiers[_rShiftCode]) ?
+			// not ideal, but moved to other thread just in case additional
+			// logic makes hook handle slow enough to be dropped by OS.
+			
+			// if any modifier is held longer than 10 seconds, it is considered
+			// non-pressed (why would anyone held win for that long before win+m anyway?)
+			foreach (var entry in _modifiers)
+			{
+				if (DateTime.Now - entry.Value >= _dropThreshold)
+				{
+					_modifiers[entry.Key] = null;
+				}
+			}
+
+			if (!(_modifiers[_lWinKeyCode].HasValue
+				|| _modifiers[_rWinKeyCode].HasValue))
+			{
+				return;
+			}
+
+			IFilter filterToUse = (_modifiers[_lShiftCode].HasValue
+				|| _modifiers[_rShiftCode].HasValue) ?
 				new BasicFilter(_excluded) :
 				new CurrentScreenFilter(_excluded, _enumerator.GetForeground());
 			// yay linq
