@@ -6,15 +6,14 @@ namespace winmplusplus3.Logic
 {
 	/// <summary>
 	/// Class that manages loading list of window titles excluded from minimizing.
-	/// Also holds built-in list for English Win 7/8/10.
+	/// Also holds hardcoded built-in list for English Win 7/8/10.
 	/// </summary>
 	public class ExcludedLoader
 	{
 		/// <summary>
 		/// (Hardcoded) file name to look for excluded window titles.
 		/// </summary>
-		private readonly string _filename = AppDomain.CurrentDomain.BaseDirectory
-			+ "\\exceptions.txt";
+		private readonly string _filename = AppDomain.CurrentDomain.BaseDirectory + "\\exceptions.txt";
 
 		/// <summary>
 		/// Variable to cache load results.
@@ -24,7 +23,7 @@ namespace winmplusplus3.Logic
 		/// <summary>
 		/// Fallback entries for English Win 7/8/10.
 		/// </summary>
-		private static List<string> _defaults = new List<string>()
+		private static readonly List<string> _defaults = new List<string>(3)
 		{
 			"Start", "Start menu", "Program Manager"
 		};
@@ -60,8 +59,7 @@ namespace winmplusplus3.Logic
 			}
 			catch (IOException)
 			{
-				throw new ApplicationException(String.Format("Unable to load file {0}",
-					_filename));
+				throw new ApplicationException($"Unable to load file {_filename}");
 			}
 		}
 	}

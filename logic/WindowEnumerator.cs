@@ -19,7 +19,7 @@ namespace winmplusplus3.Logic
 		/// Handle to assure our delegate will not be eaten by GC.
 		/// Might be unnecessary, not willing to test that.
 		/// </summary>
-		private readonly GCHandle gch;
+		private readonly GCHandle _callbackGcHandle;
 		
 		/// <summary>
 		/// Callback to EnumWindows.
@@ -33,7 +33,7 @@ namespace winmplusplus3.Logic
 		{
 			callback = new EnumWindowsCallback(Callback);
 			// better safe than sorry, I've wasted ~8 hours before finding this
-			gch = GCHandle.Alloc(callback);
+			_callbackGcHandle = GCHandle.Alloc(callback);
 		}
 		
 		/// <summary>
@@ -104,13 +104,12 @@ namespace winmplusplus3.Logic
 		/// <summary>
 		/// Destructor which removes handle.
 		/// </summary>
-		~WindowEnumerator() => gch.Free();
-		
-		// winapi imports below
-		
+		~WindowEnumerator() => _callbackGcHandle.Free();
+
+		#region WinAPI imports
+
 		[DllImport("user32.dll")] 
-		private static extern int GetWindowText(IntPtr hWnd, StringBuilder strText,
-			int maxCount); 
+		private static extern int GetWindowText(IntPtr hWnd, StringBuilder strText, int maxCount); 
 		
 		[DllImport("user32.dll")] 
 		private static extern int GetWindowTextLength(IntPtr hWnd); 
@@ -122,7 +121,8 @@ namespace winmplusplus3.Logic
 		private static extern IntPtr GetForegroundWindow();
 		
 		[DllImport("user32.dll")]
-		private static extern bool EnumWindows(EnumWindowsCallback enumProc,
-			IntPtr lParam);
+		private static extern bool EnumWindows(EnumWindowsCallback enumProc, IntPtr lParam);
+
+		#endregion
 	}
 }

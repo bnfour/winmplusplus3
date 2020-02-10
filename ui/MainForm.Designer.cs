@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel;
+
 namespace winmplusplus3.UI
 {
 	partial class MainForm
