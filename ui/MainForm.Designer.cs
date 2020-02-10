@@ -64,7 +64,7 @@ namespace winmplusplus3.UI
 	"tly. ";
 			this.trayIcon.BalloonTipTitle = "Unable to load \"exceptions.txt\"";
 			this.trayIcon.ContextMenuStrip = this.trayMenu;
-			this.trayIcon.Icon = global::winmplusplus3.Resources.tray_on;
+			this.trayIcon.Icon = Resources.tray_on;
 			this.trayIcon.Text = "Win-M++";
 			this.trayIcon.Visible = true;
 			this.trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIconMouseDoubleClick);
@@ -125,7 +125,7 @@ namespace winmplusplus3.UI
 			this.ClientSize = new System.Drawing.Size(142, 37);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::winmplusplus3.Resources.app;
+			this.Icon = Resources.app;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MainForm";
