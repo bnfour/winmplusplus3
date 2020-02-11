@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,44 +14,39 @@ namespace winmplusplus3.Logic
 	/// </summary>
 	public class KeyboardHookHandler
 	{
-		// keycodes to intercept
+		#region keycodes to intercept
+		
 		private const int _lWinKeyCode = 91;
 		private const int _rWinKeyCode = 92;
 		private const int _lShiftCode = 160;
 		private const int _rShiftCode = 161;
 
 		private const int _mCode = 77;
+		
+		#endregion
 
-		/// <summary>
-		/// Amount of time after which modifier press considered invalid.
-		/// Used to fix first M key down event minimizing after Win+L hotkey:
-		/// Windows locking actually prevents "Win key down" event from reaching the app
-		/// and win key is considered pressed until it is pressed again after unlock.
-		/// </summary>
-		private readonly TimeSpan _dropThreshold = TimeSpan.FromSeconds(10);
+		#region WinAPI constants
 
-
-		/// <summary>
-		/// Dictionary to store relevalnt modifier states.
-		/// If key is believed to be pressed, this stores time of the press.
-		/// Null means key isn't pressed now.
-		/// </summary>
-		private readonly Dictionary<int, DateTime?> _modifiers
-		= new Dictionary<int, DateTime?>()
-		{
-			// it is _supposed_ that no other keys should be added
-			// this isn't enforced though, there's no dict with fixed Keys AFAIK
-			[_lWinKeyCode] = null,
-			[_rWinKeyCode] = null,
-			[_lShiftCode] = null,
-			[_rShiftCode] = null
-		};
-
-		// Winapi constants
 		private const int WH_KEYBOARD_LL = 0xD;
 		private const int WM_KEYDOWN = 0x0100;
 		private const int WM_KEYUP = 0x0101;
-		
+
+		#endregion
+
+		/// <summary>
+		/// Dictionary to store relevalnt modifier states.
+		/// If a relevent modifier key is believed to be pressed, this contains true.
+		/// </summary>
+		private readonly Dictionary<int, bool> _modifiers = new Dictionary<int, bool>()
+		{
+			// it is _supposed_ that no other keys should be added
+			// this isn't enforced though, there's no dict with fixed Keys AFAIK
+			[_lWinKeyCode] = false,
+			[_rWinKeyCode] = false,
+			[_lShiftCode] = false,
+			[_rShiftCode] = false
+		};
+
 		/// <summary>
 		/// Flag used when "exceptions.txt" was not loaded correctly.
 		/// </summary>
@@ -59,14 +55,11 @@ namespace winmplusplus3.Logic
 		/// <summary>
 		/// Delegate for low-level keyboard hook callback.
 		/// </summary>
-		/// <param name="nCode">Process parameter. If less than zero,
-		/// we must call CallNextHookEx.</param>
+		/// <param name="nCode">Process parameter. If less than zero, we must call CallNextHookEx.</param>
 		/// <param name="wParam">Event type, such as WM_KEYUP.</param>
 		/// <param name="lParam">Key code.</param>
-		/// <returns>Pointer to next hook or non-zero pointer
-		/// when hook is fully processed.</returns>
-		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam,
-			IntPtr lParam);
+		/// <returns>Pointer to next hook or non-zero pointer when hook is fully processed.</returns>
+		private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 		
 		/// <summary>
 		/// Used to get all the windows at once
@@ -88,8 +81,8 @@ namespace winmplusplus3.Logic
 		/// Handle to hook callback delegate. Used to prevent it being eaten alive
 		/// by GC causing crashes.
 		/// </summary>
-		private readonly GCHandle gch;
-		
+		private readonly GCHandle _callbackGcHandle;
+
 		/// <summary>
 		/// Boolean indicating whether this hook handler is enabled.
 		/// True by default. That means there's no way to start this app
@@ -103,7 +96,7 @@ namespace winmplusplus3.Logic
 		private readonly IReadOnlyCollection<string> _excluded;
 		
 		/// <summary>
-		/// Constructor that sets the hook.
+		/// Constructor that loads "settings" (exclusions list) and sets the hook.
 		/// </summary>
 		public KeyboardHookHandler()
 		{
@@ -117,15 +110,34 @@ namespace winmplusplus3.Logic
 				_excluded = loader.Defaults;
 				ExclusionsLoadError = true;
 			}
+
+			SystemEvents.SessionSwitch += HandleSessionSwitching;
+
 			// set the hook
 			string curModuleName = Process.GetCurrentProcess().MainModule.ModuleName;
 			var callback = new LowLevelKeyboardProc(HandleHook);
 			// GC protection
-			gch = GCHandle.Alloc(callback);
-			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, callback,
-				GetModuleHandle(curModuleName), 0);
+			_callbackGcHandle = GCHandle.Alloc(callback);
+			_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, callback, GetModuleHandle(curModuleName), 0);
 		}
-		
+
+		/// <summary>
+		/// Event handler for session switching, which occures when the PC is locked via win-l combo, among other things.
+		/// Used to clear modifiers state. Without it, app remembers "win" part of win-l,
+		/// and minimizes windows on m presses until actual win key is pressed, resetting the state.
+		/// </summary>
+		/// <param name="sender">Event sender, unused.</param>
+		/// <param name="e">Event arguments, notably the reason for session switch. We clear keypresses state
+		/// on anything though. Better safe than sorry</param>
+		private void HandleSessionSwitching(object sender, SessionSwitchEventArgs e)
+		{
+			// ToList() prevents "collection modified" exceptions, where do they come from anyway?
+			foreach (var key in _modifiers.Keys.ToList())
+			{
+				_modifiers[key] = false;
+			}
+		}
+
 		/// <summary>
 		/// Hook callback. See LowLevelKeyboardProc for details.
 		/// </summary>
@@ -145,12 +157,11 @@ namespace winmplusplus3.Logic
 			{
 				if (_modifiers.Keys.Contains(vkCode))
 				{
-					_modifiers[vkCode] = DateTime.Now;
+					_modifiers[vkCode] = true;
 				}
 				else if (vkCode == _mCode)
 				{
-					if (_modifiers[_lWinKeyCode].HasValue
-						|| _modifiers[_rWinKeyCode].HasValue)
+					if (_modifiers[_lWinKeyCode] || _modifiers[_rWinKeyCode])
 					{
 						// fire and forget, no awaiting
 						Task.Run(() => DoWork());
@@ -164,7 +175,7 @@ namespace winmplusplus3.Logic
 			{
 				if (_modifiers.Keys.Contains(vkCode))
 				{
-					_modifiers[vkCode] = null;
+					_modifiers[vkCode] = false;
 				}
 			}
 			// if it's neither win-m nor win-shift-m, pass on
@@ -180,31 +191,11 @@ namespace winmplusplus3.Logic
 			// not ideal, but moved to other thread just in case additional
 			// logic makes hook handle slow enough to be dropped by OS.
 			
-			// if any modifier is held longer than 10 seconds, it is considered
-			// non-pressed (why would anyone held win for that long before win+m anyway?)
-			foreach (var entry in _modifiers)
-			{
-				if (DateTime.Now - entry.Value >= _dropThreshold)
-				{
-					_modifiers[entry.Key] = null;
-				}
-			}
-
-			if (!(_modifiers[_lWinKeyCode].HasValue
-				|| _modifiers[_rWinKeyCode].HasValue))
-			{
-				return;
-			}
-
-			IFilter filterToUse = (_modifiers[_lShiftCode].HasValue
-				|| _modifiers[_rShiftCode].HasValue) ?
+			IFilter filterToUse = (_modifiers[_lShiftCode] || _modifiers[_rShiftCode]) ?
 				new BasicFilter(_excluded) :
 				new CurrentScreenFilter(_excluded, _enumerator.GetForeground());
 			// yay linq
-			var windowsToMinimizeQuery =
-				from w in _enumerator.Enumerate()
-				where filterToUse.Filter(w)
-				select w;
+			var windowsToMinimizeQuery = _enumerator.Enumerate().Where(filterToUse.Filter);
 
 			foreach (var w in windowsToMinimizeQuery)
 			{
@@ -213,16 +204,17 @@ namespace winmplusplus3.Logic
 		}
 		
 		/// <summary>
-		/// Destructor that removes hook and GC protection.
+		/// Destructor that removes static event handler, keyboard hook, and GC protection.
 		/// </summary>
 		~KeyboardHookHandler()
 		{
+			SystemEvents.SessionSwitch -= HandleSessionSwitching;
 			UnhookWindowsHookEx(_hookId);
-			gch.Free();
+			_callbackGcHandle.Free();
 		}
-		
-		// Winapi imports below
-		
+
+		#region WinAPI imports
+
 		[DllImport("user32.dll")]
 		private static extern IntPtr SetWindowsHookEx(int idHook,
 			LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
@@ -237,5 +229,7 @@ namespace winmplusplus3.Logic
 
 		[DllImport("kernel32.dll")]
 		private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+		#endregion
 	}
 }
