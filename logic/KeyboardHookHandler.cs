@@ -128,17 +128,13 @@ namespace winmplusplus3.Logic
 		/// </summary>
 		/// <param name="sender">Event sender, unused.</param>
 		/// <param name="e">Event arguments, notably the reason for session switch. We clear keypresses state
-		/// on anything that vaguely resembles a log off.</param>
+		/// on anything though. Better safe than sorry</param>
 		public void HandleSessionSwitching(object sender, SessionSwitchEventArgs e)
 		{
-			// only SessionLock is tested to work, as it is fired on win-l ¯\_(ツ)_/¯
-			if (e.Reason == SessionSwitchReason.SessionLogoff || e.Reason == SessionSwitchReason.SessionLock || e.Reason == SessionSwitchReason.RemoteDisconnect)
+			// ToList() prevents "collection modified" exceptions, where do they come from anyway?
+			foreach (var key in _modifiers.Keys.ToList())
 			{
-				// ToList() prevents "collection modified" exceptions, where do they come from anyway?
-				foreach (var key in _modifiers.Keys.ToList())
-				{
-					_modifiers[key] = false;
-				}
+				_modifiers[key] = false;
 			}
 		}
 
