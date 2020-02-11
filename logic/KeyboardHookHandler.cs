@@ -129,7 +129,7 @@ namespace winmplusplus3.Logic
 		/// <param name="sender">Event sender, unused.</param>
 		/// <param name="e">Event arguments, notably the reason for session switch. We clear keypresses state
 		/// on anything though. Better safe than sorry</param>
-		public void HandleSessionSwitching(object sender, SessionSwitchEventArgs e)
+		private void HandleSessionSwitching(object sender, SessionSwitchEventArgs e)
 		{
 			// ToList() prevents "collection modified" exceptions, where do they come from anyway?
 			foreach (var key in _modifiers.Keys.ToList())

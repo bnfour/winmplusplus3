@@ -34,8 +34,7 @@ namespace winmplusplus3.Logic
 		/// <returns>True if window should be minimized, false otherwise.</returns>
 		public virtual bool Filter(Window window)
 		{
-			return window.Visible && window.Title.Length > 0
-				&& !_excluded.Contains(window.Title);
+			return window.Visible && window.Title.Length > 0 && !_excluded.Contains(window.Title);
 		}
 	}
 }
