@@ -121,10 +121,6 @@
     <None Include="exceptions.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="images\about_logo.png" />
-    <None Include="images\app.ico" />
-    <None Include="images\tray_off.ico" />
-    <None Include="images\tray_on.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
