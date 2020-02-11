@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 using winmplusplus3.Logic;
@@ -49,7 +50,7 @@ namespace winmplusplus3.UI
 		/// <param name="sender">Event sender, MainForm itself.</param>
 		/// <param name="e">Event arguments, unused.</param>
 		private void MainFormShown(object sender, EventArgs e) => Hide();
-		
+
 		/// <summary>
 		/// Handler for "Enabled" item in the tray menu.
 		/// Enables or disables app action.
@@ -122,7 +123,7 @@ namespace winmplusplus3.UI
 		/// Sets the tray icon menu according to hook state.
 		/// </summary>
 		private void UpdateIcon()
-			=> trayIcon.Icon = (_keyboardHookHandler.Enabled) ?
+			=> trayIcon.Icon = _keyboardHookHandler.Enabled ?
 				Resources.tray_on :
 				Resources.tray_off;
 		

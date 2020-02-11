@@ -10,13 +10,11 @@ namespace winmplusplus3.Logic
 	public class AutorunManager
 	{
 		// parts of registry path to write to
-		private const string _registrySubkey
-			= "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+		private const string _registrySubkey = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
 		private const string _registryPath = "HKEY_CURRENT_USER\\" + _registrySubkey;
 		private const string _registryValue = "Win-M++";
 		// location of currently running executable file
-		private readonly string _pathToExe = "\""
-			+ Assembly.GetExecutingAssembly().Location + "\"";
+		private readonly string _pathToExe = "\"" + Assembly.GetExecutingAssembly().Location + "\"";
 		
 		/// <summary>
 		/// Field to get or set Autorun for running assembly.
@@ -45,8 +43,7 @@ namespace winmplusplus3.Logic
 		/// false otherwise.</returns>
 		private bool IsAutorunEnabled()
 		{
-			var registryValue = (string)Registry.GetValue(_registryPath, _registryValue, 
-				"no");
+			var registryValue = (string)Registry.GetValue(_registryPath, _registryValue, "no");
 			return registryValue.Equals(_pathToExe);
 		}
 		

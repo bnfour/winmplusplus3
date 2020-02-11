@@ -8,18 +8,24 @@ namespace winmplusplus3.Logic
 	/// </summary>
 	public class WindowMinimizer
 	{
-		// winapi constant to minimize via ShowWindowAsync
+		#region WinAPI constant
+
 		private const int SW_MINIMIZE = 0x6;
-		
+
+		#endregion
+
 		/// <summary>
 		/// Method that utilises Winapi to minimize a single Window.
 		/// </summary>
 		/// <param name="window">Window to minimize.</param>
 		public void Minimize(Window window) => ShowWindowAsync(window.hWnd, SW_MINIMIZE);
 
-		// winapi import below
-		
+
+		#region WinAPI import
+
 		[DllImport("user32.dll")]
 		private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+		#endregion
 	}
 }
