@@ -1,4 +1,8 @@
-# Win-M++ — an upgraded version of Win+M shortcut for multiple displays, version 3
+# Win-M++ — an UNSUPPORTED (upgraded) version of Win+M shortcut for multiple displays, version 3
+
+**NOT SUPPORTED ANYMORE**  
+This app is no longer supported, because I moved away from the OS it runs on. Should still work on 7 through 10. No idea about 11 compatibility.  
+USE AT YOUR OWN RISK
 
 This is pretty much my attempt to rewrite [previous version of the app](https://github.com/bnfour/winmplusplus) in accordance with SOLID principles I was told about in the meantime. This version also has some bugs fixed.
 
